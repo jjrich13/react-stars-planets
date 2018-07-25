@@ -34,24 +34,15 @@ class App extends Component {
     
 }
 
-handleNameChange = (event) => {
-  // save what is in the inputs on newStar.name
-  this.setState({
-    newStar: {
-      ...this.state.newStar,
-      name: event.target.value
-    }
-  })
-}
+  handleChangeFor = (propertyName) => (event) => {
+    this.setState({
+      newStar: {
+        ...this.state.newStar,
+        [propertyName]: event.target.value
+      }
+    })
+  }
 
-handleDiameterChange = (event) => {
-  this.setState({
-    newStar: {
-      ...this.state.newStar,
-      diameter: event.target.value
-    }
-  })
-}
   render() {
 
     // let starListItemArray = []
@@ -83,8 +74,8 @@ handleDiameterChange = (event) => {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <form onSubmit={this.handleSubmit}>
-        <input value={this.state.newStar.name} type="text" placeholder="name" onChange={this.handleNameChange}/>
-        <input value={this.state.newStar.diameter} type="text" placeholder="diameter" onChange={this.handleDiameterChange} />
+        <input value={this.state.newStar.name} type="text" placeholder="name" onChange={this.handleChangeFor('name')}/>
+        <input value={this.state.newStar.diameter} type="text" placeholder="diameter" onChange={this.handleChangeFor('diameter')} />
         <input type="submit" />
         </form>
 
