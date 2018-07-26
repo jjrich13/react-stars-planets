@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import CurrentNewStar from '../CurrentNewStar/CurrentNewStar';
+import StarList from '../StarList/StarList';
+import NewStarForm from '../NewStarForm/NewStarForm';
+import axios from 'axios';
+import PlanetList from '../PlanetList/PlanetList'
+
 
 class App extends Component {
   constructor(props){
@@ -15,12 +22,33 @@ class App extends Component {
       newStar: {
         name: '',
         diameter: ''
-      }
+      },
+      planetList: []
     };
     
   }
 
-  handleSubmit = (event) =>{
+  //will be called once, basically when page loads
+  componentDidMount(){
+    console.log('Component mounted');
+    //this is a good place to make an initial get request
+    this.getPlanets();
+  }
+
+  getPlanets(){
+    axios.get('https://swapi.co/api/planets/?format=json')
+      .then( response => {
+        this.setState({
+          planetList: response.data.results
+        })
+        console.log(this.state);
+        
+        
+      
+    })
+  }
+
+  handleFormSubmit = (event) =>{
     console.log(this.state);
     event.preventDefault();
     //take the values on new star and add them to star list
@@ -63,25 +91,26 @@ class App extends Component {
     // })
 
     // best map usage
-    let starListItemArray = this.state.starList.map( (star, index) => {
-      return <li key={index}>The star {star.name} is {star.diameter} million km in diameter</li>
-    });
+    // let starListItemArray = this.state.starList.map( (star, index) => {
+    //   return <li key={index}>The star {star.name} is {star.diameter} million km in diameter</li>
+    // });
 
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <form onSubmit={this.handleSubmit}>
-        <input value={this.state.newStar.name} type="text" placeholder="name" onChange={this.handleChangeFor('name')}/>
-        <input value={this.state.newStar.diameter} type="text" placeholder="diameter" onChange={this.handleChangeFor('diameter')} />
-        <input type="submit" />
-        </form>
+        <Header />
+        <CurrentNewStar currentStar={this.state.newStar}/>
+        <NewStarForm 
+          handleChangeForInput={this.handleChangeFor} 
+          handleSubmit={this.handleFormSubmit} 
+          starList={this.state.starList} 
+          newStar={this.state.newStar}
+        />
 
-        <ul className="App-intro">
-          {starListItemArray}
-        </ul>
+        
+        <StarList starList={this.state.starList}/>
+        <PlanetList planetList={this.state.planetList} />
+        
+        <Footer />
       </div>
     );
   }
